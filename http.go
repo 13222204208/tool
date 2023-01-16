@@ -67,3 +67,16 @@ func PostUrlEncoded(url string, postData url.Values) (error, string) {
 	fmt.Println("返回的字符串数据", *str)
 	return err, *str
 }
+
+func GetUrl(url string) (err error,res string) {
+	resp, err := http.Get(url)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	res = string(body)
+	fmt.Println("返回的结果", res)
+	return
+}
