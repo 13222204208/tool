@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strings"
 	"unsafe"
 )
 
@@ -48,3 +50,20 @@ func PostJson(url string, info map[string]string) (error, string) {
 	//fmt.Println(string(respBytes))
 }
 
+func PostUrlEncoded(url string, postData url.Values) (error, string) {
+
+	response, err := http.Post(url, "application/x-www-form-urlencoded", strings.NewReader(postData.Encode()))
+	if err != nil {
+		return err, ""
+	}
+	respBytes, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("body体数据错误", err.Error())
+		return err, ""
+	}
+
+	//byte数组直接转成string，优化内存
+	str := (*string)(unsafe.Pointer(&respBytes))
+	fmt.Println("返回的字符串数据", *str)
+	return err, *str
+}
