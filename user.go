@@ -15,21 +15,21 @@ func UserNum() string {
 	startTimestamp := time.Now().Unix()
 	//获得时间戳
 	startTimeStr := time.Unix(startTimestamp, 0).Format("20060102") //把时间戳转换成时间,并格式化为年月日
-	nowTime := sup(hour, 2) + sup(minute, 2) + sup(second, 2)
-	randNum := randInt(100, 999)
+	nowTime := Sup(hour, 2) + Sup(minute, 2) + Sup(second, 2)
+	randNum := RandInt(100, 999)
 
 	code := startTimeStr + nowTime + strconv.Itoa(randNum)
 	code = code[2:]
 	return code
 }
 
-func randInt(min, max int) int {
+func RandInt(min, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min) + min
 }
 
 //对长度不足n的数字前面补0
-func sup(i int, n int) string {
+func Sup(i int, n int) string {
 	m := fmt.Sprintf("%d", i)
 	for len(m) < n {
 		m = fmt.Sprintf("0%s", m)
