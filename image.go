@@ -52,3 +52,22 @@ func ImgBase64(path string) (baseImg string, err error) {
 	baseImg = base64.StdEncoding.EncodeToString(imgByte)
 	return
 }
+
+//base64图片转成本地图片
+func Base64ToImag(b64Img ,path string)(img string ,err error){
+	// 将base64编码的图片字符串解码为字节数组
+	imgBytes, err := base64.StdEncoding.DecodeString(b64Img)
+	if err != nil {
+	fmt.Println("解码失败：", err)
+	return
+	}
+
+	img = path+UserNum()+".png"
+	// 将字节数组写入本地文件
+	err = ioutil.WriteFile(img, imgBytes, os.ModePerm)
+	if err != nil {
+	fmt.Println("写入文件失败：", err)
+	return
+	}
+	return
+}
