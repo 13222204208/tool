@@ -1,12 +1,17 @@
 package tool
 
 import (
+	"bytes"
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"image"
+	"image/jpeg"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 //本地图片转换为Base64 带前缀
@@ -54,20 +59,38 @@ func ImgBase64(path string) (baseImg string, err error) {
 }
 
 //base64图片转成本地图片
-func Base64ToImag(b64Img ,path string)(img string ,err error){
-	// 将base64编码的图片字符串解码为字节数组
-	imgBytes, err := base64.StdEncoding.DecodeString(b64Img)
+func Base64ToImag(b64Img, path string) (imgUrl string, err error) {
+	// 去掉前缀
+	base64Data := strings.Split(b64Img, ",")[1]
+
+	// 解码 Base64 字符串
+	data, err := base64.StdEncoding.DecodeString(base64Data)
 	if err != nil {
-	fmt.Println("解码失败：", err)
-	return
+		log.Fatal(err)
 	}
 
-	img = path+UserNum()+".png"
-	// 将字节数组写入本地文件
-	err = ioutil.WriteFile(img, imgBytes, os.ModePerm)
+	// 创建 bytes.Buffer 对象
+	buffer := bytes.Buffer{}
+	buffer.Write(data)
+
+	// 解码图片
+	img, _, err := image.Decode(&buffer)
 	if err != nil {
-	fmt.Println("写入文件失败：", err)
-	return
+		log.Fatal(err)
+	}
+
+	imgUrl = path + UserNum() + ".jpg"
+	// 将图片写入文件
+	file, err := os.Create(imgUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer file.Close()
+
+	// 将图片以 JPEG 格式写入文件
+	err = jpeg.Encode(file, img, nil)
+	if err != nil {
+		log.Fatal(err)
 	}
 	return
 }
