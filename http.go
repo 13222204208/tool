@@ -68,7 +68,7 @@ func PostUrlEncoded(url string, postData url.Values) (error, string) {
 	return err, *str
 }
 
-func GetUrl(url string) (err error,res string) {
+func GetUrl(url string) (err error, res string) {
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Println(err)
